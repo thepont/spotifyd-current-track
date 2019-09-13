@@ -1,0 +1,14 @@
+{
+  "name": "spotifyd-current-track",
+  "version": "0.0.1",
+  "description": "Displays the current track playing in spotifyd on the console",
+  "main": "index.js",
+  "author": "Paul Esson",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "journalctl": "^1.0.0",
+    "rxjs": "^6.5.3",
+    "spotify-web-api-node": "^4.0.0"
+  }
+}

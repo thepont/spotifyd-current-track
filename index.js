@@ -26,9 +26,9 @@ const gotGrant = spotifyApi.clientCredentialsGrant()
         process.exit(-1);
     });
 messages.pipe(
-    debounceTime(100),
     map(ii => ii.MESSAGE.match(/.*Loading track.*spotify:track:([A-z0-9]+)/)),
     filter(ii => ii && ii.length === 2),
+    debounceTime(10),
     map(ii => ii[1]),
     flatMap(async ii => {
         await gotGrant;
@@ -37,7 +37,6 @@ messages.pipe(
     filter(ii => ii.body && ii.body.tracks),
     flatMap(ii => ii.body.tracks),
     map(track => tracklog(track))
-    // tap(ii => console.log(ii))
 ).subscribe(ii => {
     process.stdout.clearLine();
     process.stdout.cursorTo(0);

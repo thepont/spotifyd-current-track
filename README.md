@@ -17,5 +17,5 @@ Also you need to make a client and client secret for the spotify api and export 
 ```
 export SPOTIFY_CLIENT_ID="the_id_spotify_gives_you"
 export SPOTIFY_CLIENT_SECRET="the_secret_spotify_gives_you"
-``
+```
 

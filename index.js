@@ -1,5 +1,5 @@
-const {Subject} = require('rxjs');
-const {map, tap, filter, flatMap} = require('rxjs/operators');
+const {Subject, interval} = require('rxjs');
+const {map, tap, filter, flatMap, debounceTime} = require('rxjs/operators');
 const Journalctl = require('journalctl');
 const SpotifyWebApi = require('spotify-web-api-node');
 
@@ -19,8 +19,14 @@ journalctl.on('event', (event) => {
 });
 
 
-const gotGrant = spotifyApi.clientCredentialsGrant().then((data) => spotifyApi.setAccessToken(data.body['access_token']));
+const gotGrant = spotifyApi.clientCredentialsGrant()
+    .then((data) => spotifyApi.setAccessToken(data.body['access_token']))
+    .catch(err  => { 
+        console.log(console.error("error logging in", err))
+        process.exit(-1);
+    });
 messages.pipe(
+    debounceTime(100),
     map(ii => ii.MESSAGE.match(/.*Loading track.*spotify:track:([A-z0-9]+)/)),
     filter(ii => ii && ii.length === 2),
     map(ii => ii[1]),

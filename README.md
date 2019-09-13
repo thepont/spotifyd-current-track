@@ -1,0 +1,1 @@
+# spotifyd-current-track

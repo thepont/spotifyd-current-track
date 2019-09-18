@@ -1,7 +1,9 @@
-const {Subject, interval} = require('rxjs');
-const {map, tap, filter, flatMap, debounceTime} = require('rxjs/operators');
+const { spawn } = require('child_process'); 
+const {Subject} = require('rxjs');
+const {map, filter, flatMap, debounceTime, tap, share} = require('rxjs/operators');
 const Journalctl = require('journalctl');
 const SpotifyWebApi = require('spotify-web-api-node');
+
 
 const journalctl = new Journalctl({
     identifier: "Spotifyd"
@@ -22,10 +24,10 @@ journalctl.on('event', (event) => {
 const gotGrant = spotifyApi.clientCredentialsGrant()
     .then((data) => spotifyApi.setAccessToken(data.body['access_token']))
     .catch(err  => { 
-        console.log(console.error("error logging in", err))
+        console.error("error logging in", err);
         process.exit(-1);
     });
-messages.pipe(
+let tracks = messages.pipe(
     map(ii => ii.MESSAGE.match(/.*Loading track.*spotify:track:([A-z0-9]+)/)),
     filter(ii => ii && ii.length === 2),
     debounceTime(10),
@@ -36,9 +38,22 @@ messages.pipe(
     }),
     filter(ii => ii.body && ii.body.tracks),
     flatMap(ii => ii.body.tracks),
-    map(track => tracklog(track))
-).subscribe(ii => {
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    process.stdout.write(ii)
+    share()
+)
+
+let albumsArt = tracks.pipe(
+    map(ii => ii.album.images),
+    filter(ii => ii.length > 0),
+    map(ii => ii[0].url)
+).subscribe(
+    ii => spawn('feh', ['--bg-center', ii])
+)
+
+tracks.subscribe(ii => {
+    console.log(tracklog(ii));
 });
+
+
+
+// feh --bg-scale /path/to/image
+// or feh --bg-center /path/to/image

@@ -1,6 +1,6 @@
 - hosts: spottypi
   remote_user: "{{ admin_user }}"
-  become: yes
+  # become: yes
   vars:
     admin_user: pont
     admin_email: paul.esson+spotifypi@gmail.com
@@ -20,8 +20,18 @@
       git:
         repo: https://github.com/karlstav/cava
         dest: /home/{{ admin_user }}/git/cava
+    - name: compile auto gen cava
+      command: ./autogen.sh
+      args:
+        creates: /home/{{ admin_user }}/git/cava/cava
+        chdir: /home/{{ admin_user }}/git/cava
+    - name: compile ./configure cava
+      command: ./configure
+      args:
+        creates: /home/{{ admin_user }}/git/cava/cava
+        chdir: /home/{{ admin_user }}/git/cava
     - name: compile cava
-      command: ./autogen.sh && ./configure && make
+      command: make
       args:
         creates: /home/{{ admin_user }}/git/cava/cava
         chdir: /home/{{ admin_user }}/git/cava

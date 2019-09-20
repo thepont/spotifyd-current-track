@@ -68,7 +68,7 @@
 
   - name: Configure timezone
     timezone:
-      name: America/Toronto
+      name: Australia/Sydney
 
   - name: Reboot
     reboot:

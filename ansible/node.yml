@@ -1,0 +1,9 @@
+- hosts: spottypi 
+  vars:
+    nodejs_version: "10.x"
+    npm_config_prefix: "/usr/local/lib/npm"
+    npm_config_unsafe_perm: "false"
+    nodejs_npm_global_packages: []
+    nodejs_package_json_path: ""
+  roles:
+    - geerlingguy.nodejs

@@ -1,4 +1,4 @@
-- hosts: raspberrypi
+- hosts: spottypi
   remote_user: "{{ admin_user }}"
   become: yes
   vars:
@@ -15,11 +15,13 @@
           - libncursesw5-dev 
           - libpulse-dev 
           - libtool
-          - autotools    
-    - git:
-      repo: https://github.com/karlstav/cava
-      dest: /home/{{ admin_user }}/git/cava
+          - autoconf  
+    - name: Download Cava
+      git:
+        repo: https://github.com/karlstav/cava
+        dest: /home/{{ admin_user }}/git/cava
     - name: compile cava
       command: ./autogen.sh && ./configure && make
-      creates: /home/{{ admin_user }}/git/cava/cava
-      chdir: /home/{{ admin_user }}/git/cava
+      args:
+        creates: /home/{{ admin_user }}/git/cava/cava
+        chdir: /home/{{ admin_user }}/git/cava

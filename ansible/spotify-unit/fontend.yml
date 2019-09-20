@@ -1,0 +1,18 @@
+- hosts: spottypi
+  remote_user: "{{ admin_user }}"
+  become: yes
+  vars:
+    admin_user: pont
+  tasks:
+    - name: Packages dependencies
+      apt: name={{ packages }} state=present
+      tags: apt
+      vars:
+        packages:
+          - feh
+          - i3
+          - xinit
+          - lxterminal
+    - git:
+      repo: https://github.com/thepont/spotifyd-current-track
+      dest: /home/{{ admin_user }}/git/spotifyd-current-track

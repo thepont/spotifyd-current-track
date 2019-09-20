@@ -1,0 +1,8 @@
+  - name: Configure the hostname
+    block:
+      - replace:
+          dest: "/etc/hosts"
+          regexp: "raspberrypi"
+          replace: "spottypi"
+      - hostname:
+          name: "spottypi"

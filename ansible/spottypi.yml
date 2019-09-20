@@ -1,0 +1,10 @@
+
+- hosts: spottypi
+  remote_user: "{{ admin_user }}"
+  vars:
+    admin_user: pont
+  tasks:
+    - import_tasks: ./spotify-unit/cava.yml
+    - import_tasks: ./spotify-unit/frontend.yml
+    - import_tasks: ./spotify-unit/spotifyd.yml
+    - import_tasks: ./spotify-unit/system.yml

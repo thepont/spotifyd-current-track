@@ -1,4 +1,5 @@
   - name: Configure the hostname
+    become: yes
     block:
       - replace:
           dest: "/etc/hosts"

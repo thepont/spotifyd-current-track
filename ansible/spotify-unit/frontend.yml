@@ -1,19 +1,15 @@
-- hosts: spottypi
-  remote_user: "{{ admin_user }}"
+# Installs my spotifyd frontend
+- name: Spotifyd frontend dependencies
+  apt: name={{ packages }} state=present
+  tags: apt
+  become: yes
   vars:
-    admin_user: pont
-  tasks:
-    - name: Packages dependencies
-      apt: name={{ packages }} state=present
-      tags: apt
-      become: yesqq
-      vars:
-        packages:
-          - feh
-          - i3
-          - xinit
-          - lxterminal
-    - name: clone current track repo
-      git:
-        repo: https://github.com/thepont/spotifyd-current-track
-        dest: /home/{{ admin_user }}/git/spotifyd-current-track
+    packages:
+      - feh
+      - i3
+      - xinit
+      - lxterminal
+- name: Clone current track repository
+  git:
+    repo: https://github.com/thepont/spotifyd-current-track
+    dest: /home/{{ admin_user }}/git/spotifyd-current-track

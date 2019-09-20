@@ -1,49 +1,60 @@
-- hosts: spottypi
-  remote_user: "{{ admin_user }}"
-  # become: yes
+# Installs C.A.V.A graphic eq for console.
+# https://github.com/karlstav/cava
+- name: C.A.V.A build dependencies
+  apt: name={{ packages }} state=present
+  become: yes
+  tags: apt
   vars:
-    admin_user: pont
-    admin_email: paul.esson+spotifypi@gmail.com
-  tasks:
-    - name: Make Deps
-      apt: name={{ packages }} state=present
-      become: yes
-      tags: apt
-      vars:
-        packages:
-          - libfftw3-dev 
-          - libasound2-dev 
-          - libncursesw5-dev 
-          - libpulse-dev 
-          - libtool
-          - autoconf 
-          - pulseaudio 
-          - pulseaudio-module-zeroconf 
-          - alsa-utils 
-          - avahi-daemon
-    - name: start pulseaudio
-      systemd:
-        name: pulseaudio
-        enabled: yes
-        scope: user
-        state: started
-        masked: no
-    - name: Download Cava
-      git:
-        repo: https://github.com/karlstav/cava
-        dest: /home/{{ admin_user }}/git/cava
-    - name: compile auto gen cava
-      command: ./autogen.sh
-      args:
-        creates: /home/{{ admin_user }}/git/cava/cava
-        chdir: /home/{{ admin_user }}/git/cava
-    - name: compile ./configure cava
-      command: ./configure
-      args:
-        creates: /home/{{ admin_user }}/git/cava/cava
-        chdir: /home/{{ admin_user }}/git/cava
-    - name: compile cava
-      command: make
-      args:
-        creates: /home/{{ admin_user }}/git/cava/cava
-        chdir: /home/{{ admin_user }}/git/cava
+    packages:
+      - libfftw3-dev 
+      - libasound2-dev 
+      - libncursesw5-dev 
+      - libpulse-dev 
+      - libtool
+      - autoconf 
+      - pulseaudio 
+      - pulseaudio-module-zeroconf 
+      - alsa-utils 
+      - avahi-daemon
+- name: Start PulseAudio 
+  systemd:
+    name: pulseaudio
+    enabled: yes
+    scope: user
+    state: started
+    masked: no
+- name: Download C.A.V.A
+  git:
+    repo: https://github.com/karlstav/cava
+    dest: /home/{{ admin_user }}/git/cava
+- name: "Compile Cava: ./autogen.sh"
+  command: ./autogen.sh
+  args:
+    creates: /home/{{ admin_user }}/git/cava/cava
+    chdir: /home/{{ admin_user }}/git/cava
+- name: "Compile C.A.V.A: ./configure"
+  command: ./configure
+  args:
+    creates: /home/{{ admin_user }}/git/cava/cava
+    chdir: /home/{{ admin_user }}/git/cava
+- name: "Compile C.A.V.A: make"
+  command: make
+  args:
+    creates: /home/{{ admin_user }}/git/cava/cava
+    chdir: /home/{{ admin_user }}/git/cava
+- name: "Compile C.A.V.A: make install"
+  command: make install
+  become: yes
+  args:
+    chdir: /home/{{ admin_user }}/git/cava
+- name: remove C.A.V.A build dependencies
+  become: yes
+  apt:
+    name: 
+    - libfftw3-dev 
+    - libasound2-dev 
+    - libncursesw5-dev 
+    - libpulse-dev 
+    - libtool
+    - autoconf 
+    state: absent

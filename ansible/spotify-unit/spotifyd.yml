@@ -3,10 +3,11 @@
   become: yes
   vars:
     admin_user: pont
+    # spotifyd_version: 2019-09-15
   tasks:
     - name: Install spotifyd binary.
       unarchive:
-        src: https://github.com/Spotifyd/spotifyd/releases/download/0.2.12/spotifyd-{{ spotifyd_version }}-armv6-slim.zip
+        src: https://github.com/Spotifyd/spotifyd/releases/download/v0.2.4/spotifyd-2019-01-28-armv6.zip
         dest: /usr/bin/
         remote_src: yes
         mode: 777
@@ -14,13 +15,7 @@
       get_url:
         url: https://raw.githubusercontent.com/Spotifyd/spotifyd/master/contrib/spotifyd.service
         dest: /etc/systemd/user/spotifyd.service
-    - name: enable service httpd and ensure it is not masked
-      systemd:
-        name: spotifyd
-        enabled: yes
-        scope: user
-        masked: no
     - name: Copy spotifyd config.
       copy:
-        src: ./conf/spotifyd.conf
-        dest: /home/{{ admin_user }}/spotifyd.conf
+        src: ../config/spotifyd.conf
+        dest: /home/{{ admin_user }}/.config/spotifyd.conf

@@ -1,0 +1,25 @@
+- hosts: raspberrypi
+  remote_user: "{{ admin_user }}"
+  become: yes
+  vars:
+    admin_user: pont
+    admin_email: paul.esson+spotifypi@gmail.com
+  tasks:
+    - name: Make Deps
+      apt: name={{ packages }} state=present
+      tags: apt
+      vars:
+        packages:
+          - libfftw3-dev 
+          - libasound2-dev 
+          - libncursesw5-dev 
+          - libpulse-dev 
+          - libtool
+          - autotools    
+    - git:
+      repo: https://github.com/karlstav/cava
+      dest: /home/{{ admin_user }}/git/cava
+    - name: compile cava
+      command: ./autogen.sh && ./configure && make
+      creates: /home/{{ admin_user }}/git/cava/cava
+      chdir: /home/{{ admin_user }}/git/cava

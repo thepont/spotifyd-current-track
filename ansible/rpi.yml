@@ -1,0 +1,92 @@
+# Configures the Raspberry Pi that handles my home automation
+#
+# It assumes my user has already been created by rpi_provisioning.yml
+
+- hosts: raspberrypi
+  remote_user: "{{ admin_user }}"
+  become: yes
+  vars:
+    admin_user: pont
+    admin_email: paul.esson+spotifypi@gmail.com
+
+  handlers:
+  - name: restart ssh
+    service: name=ssh state=restarted
+
+  - name: restart dns
+    service: name=dnsmasq state=restarted
+
+  - name: restart unattended-upgrades
+    service: name=unattended-upgrades state=restarted
+
+  - name: reboot
+    reboot:
+
+  tasks:
+  - name: Add my user to all groups that pi normally belongs to
+    user:
+      name: "{{ admin_user }}"
+      groups: pi,adm,dialout,cdrom,sudo,audio,video,plugdev,games,users,input,netdev,gpio,i2c,spi
+      append: yes
+
+  - name: Update packages info (if older than a couple days)
+    apt: update_cache=yes cache_valid_time=7200
+
+  - name: Install general utilities
+    apt: name={{ packages }} state=present
+    tags: apt
+    vars:
+      packages:
+        - git                  # Required for Ansible git (and for life, IMHO).
+        - python-setuptools    # Required for Ansible pip ¯\_(ツ)_/¯
+        - aptitude             # I don't use it, but Ansible seems to.
+        - python3-gpiozero     # Provides pinout (and I ❤️ pinout).
+
+  - name: Update SSH configuration to be more secure (no password/root logins).
+    lineinfile:
+      dest: "/etc/ssh/sshd_config"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      state: present
+    with_items:
+      - regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+      - regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+    notify: restart ssh
+
+  # Uncomment if you don't want the local pi user
+  - name: Drop the pi user (we don't need it and can't even use it remotely at this point)
+    user: name={{ admin_user }} state=absent remove=yes
+
+  - name: Install unattended upgrades package and dependencies.
+    apt: name={{ packages }} state=present
+    vars:
+      packages:
+        - unattended-upgrades
+        - apt-listchanges
+        - bsd-mailx
+  - name: Updated unattended-upgrades config to reboot if needed,
+          auto-fix, reboot time, email, etc
+    lineinfile:
+      dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      state: present
+    with_items:
+      - regexp: "(\/\/)? ?Unattended-Upgrade::AutoFixInterruptedDpkg \""
+        line: Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+      - regexp: "(\/\/)? ?Unattended-Upgrade::MinimalSteps \""
+        line: Unattended-Upgrade::MinimalSteps "true";
+      - regexp: "(\/\/)? ?Unattended-Upgrade::Automatic-Reboot \""
+        line: Unattended-Upgrade::Automatic-Reboot "true";
+      - regexp: "(\/\/)? ?Unattended-Upgrade::Automatic-Reboot-Time \""
+        line: Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+      - regexp: "(\/\/)? ?Unattended-Upgrade::Mail \""
+        line: Unattended-Upgrade::Mail "{{ admin_email }}";
+      - regexp: "(\/\/)? ?Unattended-Upgrade::MailOnlyOnError \""
+        line: Unattended-Upgrade::MailOnlyOnError "false";
+      - regexp: "(\/\/)? ?Unattended-Upgrade::Remove-Unused-Dependencies \""
+        line: Unattended-Upgrade::Remove-Unused-Dependencies "true";
+    notify: restart unattended-upgrades
+  

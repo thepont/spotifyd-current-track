@@ -1,9 +1,12 @@
+
+// #!/usr/bin/env node
+
 const { spawn } = require('child_process'); 
-const {Subject} = require('rxjs');
-const {map, filter, flatMap, debounceTime, tap, share} = require('rxjs/operators');
+const {Subject, timer} = require('rxjs');
+const {map, filter, flatMap, debounceTime, tap, share, skipUntil, first} = require('rxjs/operators');
 const Journalctl = require('journalctl');
 const SpotifyWebApi = require('spotify-web-api-node');
-
+const RENEW_TOKEN_MS = 3000000;
 
 const journalctl = new Journalctl({
     identifier: "Spotifyd"
@@ -19,23 +22,22 @@ const messages = new Subject();
 journalctl.on('event', (event) => {
     messages.next(event);
 });
+let auth = timer(0, RENEW_TOKEN_MS).pipe(
+    flatMap(() => spotifyApi.clientCredentialsGrant()),
+    share()
+);
 
+auth.subscribe((cred) => {
+    spotifyApi.setAccessToken(cred.body['access_token'])
+});
 
-const gotGrant = spotifyApi.clientCredentialsGrant()
-    .then((data) => spotifyApi.setAccessToken(data.body['access_token']))
-    .catch(err  => { 
-        console.error("error logging in", err);
-        process.exit(-1);
-    });
 let tracks = messages.pipe(
+    skipUntil(auth.pipe(first())),
     map(ii => ii.MESSAGE.match(/.*Loading track.*spotify:track:([A-z0-9]+)/)),
     filter(ii => ii && ii.length === 2),
     debounceTime(10),
     map(ii => ii[1]),
-    flatMap(async ii => {
-        await gotGrant;
-        return await spotifyApi.getTracks([ii]);
-    }),
+    flatMap(async ii =>  spotifyApi.getTracks([ii])),
     filter(ii => ii.body && ii.body.tracks),
     flatMap(ii => ii.body.tracks),
     share()

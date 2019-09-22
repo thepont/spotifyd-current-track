@@ -13,3 +13,41 @@
   git:
     repo: https://github.com/thepont/spotifyd-current-track
     dest: /home/{{ admin_user }}/git/spotifyd-current-track
+- name: install spotifyd current track deps
+  command: npm install
+  args:
+    chdir: /home/{{ admin_user }}/git/spotifyd-current-track
+- name: "Startx on tty1 login"
+  lineinfile:
+    insertafter: "EOF"
+    state: "present"
+    path: "/home/{{ admin_user }}/.bashrc"
+    line: "if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then exec startx; fi"
+- name: "i3 default wm"
+  copy:
+    content: "exec /usr/bin/i3"
+    dest: "/home/{{ admin_user }}/.xinitrc"
+- name: "lxterminal setup"
+  block:
+    - file: 
+        path: "/home/{{ admin_user }}/.config/lxterminal" 
+        state: directory
+    - copy:
+        src: "../config/lxterminal.conf"
+        dest: "/home/{{ admin_user }}/.config/lxterminal/lxterminal.conf"
+- name: "i3 setup"
+  block:
+    - file: 
+        path: "/home/{{ admin_user }}/.config/lxterminal" 
+        state: directory
+    - copy:
+        src: "../config/i3"
+        dest: "/home/{{ admin_user }}/.config/i3/config"
+- name: "i3 setup"
+  block:
+    - file: 
+        path: "/home/{{ admin_user }}/.config/lxterminal" 
+        state: directory
+    - copy:
+        src: "../config/i3"
+        dest: "/home/{{ admin_user }}/.config/i3/config"

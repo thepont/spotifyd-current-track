@@ -1,9 +1,39 @@
-  - name: Configure the hostname
-    become: yes
-    block:
-      - replace:
-          dest: "/etc/hosts"
-          regexp: "raspberrypi"
-          replace: "spottypi"
-      - hostname:
-          name: "spottypi"
+- name: Configure the hostname
+  become: yes
+  block:
+    - replace:
+        dest: "/etc/hosts"
+        regexp: "raspberrypi"
+        replace: "spottypi"
+    - hostname:
+        name: "spottypi"
+# TODO: make an unprivliged user for this task
+- name: Configure autologin
+  become: yes
+  block:
+    - lineinfile:
+        state: "present"
+        path: "/etc/systemd/system/autologin@.service"
+        regexp: "^ExecStart="
+        line: "ExecStart=-/sbin/agetty --autologin {{ admin_user }} --noclear %I $TERM"
+    # - file:
+    #     src: /etc/systemd/system/autologin@.service
+    #     dest: /etc/systemd/system/getty.target.wants/getty@tty1.service
+    #     state: link
+    # - systemd:
+    #     name: getty@tty1
+    #     enabled: yes
+    #     masked: no
+
+    - name: Set Boot behaviour
+      shell: "raspi-config nonint do_boot_behaviour B2"
+
+    - name: Get boot autologin
+      shell: "raspi-config nonint get_autologin"
+      register: auto_login
+      changed_when: False
+
+    - name: Print boot autologin status
+      debug: 
+        msg: "Boot autologin is: {{ auto_login.stdout }}"
+    - reboot:

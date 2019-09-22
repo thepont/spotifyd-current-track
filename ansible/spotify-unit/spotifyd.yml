@@ -17,3 +17,11 @@
   copy:
     src: ../config/spotifyd.conf
     dest: /home/{{ admin_user }}/.config/spotifyd.conf
+- name: Start spotifyd.
+  systemd:
+    scope: user
+    name: spotifyd
+    enabled: yes
+- name: "Set volume"
+  command: "amixer set Master 100%"
+      

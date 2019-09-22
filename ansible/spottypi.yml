@@ -3,7 +3,20 @@
   remote_user: "{{ admin_user }}"
   vars:
     admin_user: pont
+    nodejs_version: "10.x"
+    npm_config_prefix: "/usr/local/lib/npm"
+    npm_config_unsafe_perm: "false"
+    nodejs_npm_global_packages: []
+    nodejs_package_json_path: ""
+  roles:
+    - { role: geerlingguy.nodejs, become: yes }
   tasks:
+    # - name: "install https transport"
+    #   apt: 
+    #     - name: 
+    #       state: present
+    #   become: yes
+      # tags: apt
     - import_tasks: ./spotify-unit/cava.yml
     - import_tasks: ./spotify-unit/frontend.yml
     - import_tasks: ./spotify-unit/spotifyd.yml

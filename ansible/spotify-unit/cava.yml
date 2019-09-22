@@ -58,3 +58,11 @@
     - libtool
     - autoconf 
     state: absent
+- name: "CAVA setup"
+  block:
+    - file: 
+        path: "/home/{{ admin_user }}/.config/cava" 
+        state: directory
+    - copy:
+        src: "../config/cava"
+        dest: "/home/{{ admin_user }}/.config/cava/config"

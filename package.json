@@ -6,6 +6,7 @@
   "author": "Paul Esson",
   "license": "MIT",
   "private": false,
+  "bin" : { "spotifyd-current-track" : "spotifyd-current-track.sh" },
   "dependencies": {
     "journalctl": "^1.0.0",
     "rxjs": "^6.5.3",

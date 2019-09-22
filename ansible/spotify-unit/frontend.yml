@@ -10,6 +10,7 @@
       - xinit
       - lxterminal
       - unclutter
+      - x11-xserver-utils
 - name: Clone current track repository
   git:
     repo: https://github.com/thepont/spotifyd-current-track

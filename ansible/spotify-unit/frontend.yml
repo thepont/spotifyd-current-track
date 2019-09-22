@@ -8,6 +8,7 @@
       - feh
       - i3
       - xinit
+      - compton
       - lxterminal
       - unclutter
       - x11-xserver-utils
@@ -53,3 +54,19 @@
     - copy:
         src: "../config/i3"
         dest: "/home/{{ admin_user }}/.config/i3/config"
+- name: "Compton Setup"
+  copy:
+    src: "../config/compton.conf"
+    dest: "/home/{{ admin_user }}/.config/compton.conf"
+- name: "Export spotify client id"
+  lineinfile:
+    insertafter: "EOF"
+    state: "present"
+    path: "/home/{{ admin_user }}/.bashrc"
+    line: "export SPOTIFY_CLIENT_ID={{spotify_client_id}}"
+- name: "Export spotify client secret"
+  lineinfile:
+    insertafter: "EOF"
+    state: "present"
+    path: "/home/{{ admin_user }}/.bashrc"
+    line: "export SPOTIFY_CLIENT_SECRET={{spotify_client_secret}}"

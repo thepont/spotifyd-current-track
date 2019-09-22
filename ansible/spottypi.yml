@@ -2,6 +2,15 @@
 - hosts: spottypi
   remote_user: "{{ admin_user }}"
   vars:
+    spotify_client_id: "1d8923845ea44c5db7f963204e887b94"
+    spotify_client_secret: !vault |
+          $ANSIBLE_VAULT;1.2;AES256;secret
+          38623565613865326633326462353839383339346436313736356230383434323832623938386538
+          3531646330376233643364373237353463613963383134650a346263393031666163373432663534
+          35653736656436653465323836373437383730353738336336396635313539323735376465373838
+          3133626538346239340a623163393336373863626665626337646232356466613464343566386633
+          33353436653035626161623233363164333038346564343133613466346537363761653339333637
+          3335356135336463386165623863333130353530636564343365
     admin_user: pont
     nodejs_version: "10.x"
     npm_config_prefix: "/usr/local/lib/npm"
@@ -11,12 +20,6 @@
   roles:
     - { role: geerlingguy.nodejs, become: yes }
   tasks:
-    # - name: "install https transport"
-    #   apt: 
-    #     - name: 
-    #       state: present
-    #   become: yes
-      # tags: apt
     - import_tasks: ./spotify-unit/cava.yml
     - import_tasks: ./spotify-unit/frontend.yml
     - import_tasks: ./spotify-unit/spotifyd.yml

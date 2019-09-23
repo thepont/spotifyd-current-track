@@ -1,0 +1,29 @@
+{
+    "layout": "splitv",
+    "percent": 1,
+    "type": "con",
+    "nodes": [
+        {
+            "border": "none",
+            "name": "cava",
+            "percent": 0.9,
+            "type": "con",
+            "swallows": [
+                {
+                    "instance": "^cava$"
+                }
+            ]
+        },
+        {
+            "border": "none",
+            "name": "current-track",
+            "percent": 0.1,
+            "type": "con",
+            "swallows": [
+                {
+                    "title": "^spotifyd-current-track$"
+                }
+            ]       
+        }
+    ]
+}

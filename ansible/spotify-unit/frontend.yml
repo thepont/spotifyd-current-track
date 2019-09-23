@@ -12,14 +12,18 @@
       - lxterminal
       - unclutter
       - x11-xserver-utils
-- name: Clone current track repository
-  git:
-    repo: https://github.com/thepont/spotifyd-current-track
-    dest: /home/{{ admin_user }}/git/spotifyd-current-track
-- name: install spotifyd current track deps
-  command: npm install
-  args:
-    chdir: /home/{{ admin_user }}/git/spotifyd-current-track
+  - name: Install current track global NPM
+    npm:
+        global: true
+        name: git+https://github.com/thepont/spotifyd-current-track
+# - name: Clone current track repository
+#   git:
+#     repo: https://github.com/thepont/spotifyd-current-track
+#     dest: /home/{{ admin_user }}/git/spotifyd-current-track
+# - name: install spotifyd current track deps
+#   command: npm install
+#   args:
+#     chdir: /home/{{ admin_user }}/git/spotifyd-current-track
 - name: "Startx on tty1 login"
   lineinfile:
     insertafter: "EOF"
@@ -41,15 +45,7 @@
 - name: "i3 setup"
   block:
     - file: 
-        path: "/home/{{ admin_user }}/.config/lxterminal" 
-        state: directory
-    - copy:
-        src: "../config/i3"
-        dest: "/home/{{ admin_user }}/.config/i3/config"
-- name: "i3 setup"
-  block:
-    - file: 
-        path: "/home/{{ admin_user }}/.config/lxterminal" 
+        path: "/home/{{ admin_user }}/.config/i3" 
         state: directory
     - copy:
         src: "../config/i3"

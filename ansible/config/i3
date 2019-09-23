@@ -36,15 +36,8 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-#bindsym $mod+d exec dmenu_run -nb '#3c3836' -nf '#fbf1c7' -sb '#83a598' -sf '#ebdbb2' -fn 'Fira Code-17'
+bindsym $mod+d exec dmenu_run -nb '#3c3836' -nf '#fbf1c7' -sb '#83a598' -sf '#ebdbb2' -fn 'Fira Code-17'
 
-bindsym $mod+d exec rofi -show run
-bindsym $mod+Tab exec rofi -show window
-focus_follows_mouse yes
-# There also is the (new) i3-dmenu-desktop which only displays applications
-# shipping a .desktop file. It is a wrapper around dmenu, so you need that
-# installed.
-# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # change focus
 bindsym $mod+j focus left
@@ -135,12 +128,6 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 client.background       #ffffff
 
-new_window pixel 1
-
-#for_window [class="google-chrome"] border pixel 0
-
-for_window [class="Google-chrome" title="Google Chrome"] border none
-
 set $TITLE border normal 1
 set $UNTITLE border pixel 1
 
@@ -176,32 +163,18 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-#bar {
-#
-#	colors {
-#		# Whole color settings
-#		background #3c3836
-#		statusline #ebdbb2
-#		separator  #666666
-#
-#		
-#		focused_workspace  #458588 #458588 #ebdbb2
-#		active_workspace   #83a598 #83a598 #ebdbb2
-#		inactive_workspace #504945 #504945 #ebdbb2
-#		urgent_workspace   #cc241d #cc241d #504945
-#	}
-#       status_command i3status -c ~/.config/i3status.conf
-#}
-#
 for_window [class="^.*"] border pixel 0
-exec  --no-startup-id lxterminal -e "cava" -t "cava"
-exec  --no-startup-id lxterminal -e "spotifyd-current-track" -t "spotifyd-current-track"
+# Create a terminal with the VSD and another with the track info
+exec  --no-startup-id xterm -e "cava"
+exec  --no-startup-id xterm -fa 'Monospace' -fs 25 -e "cd ~/git/spotifyd-current-track/ && ./spotifyd-current-track.sh" 
 # Turn off power saving so the monitor doesn't always turn off
 exec_always  --no-startup-id xset s off
 exec_always  --no-startup-id xset -dpms
 # Remove mouse cursor
 exec  --no-startup-id unclutter -idle 10
+# enable transparency
 exec  --no-startup-id compton
-exec_always  --no-startup-id "i3-msg 'workspace 1; append_layout ~/.config/i3/workspace-1.json'"
+
+# Setup our layout.
+exec_always --no-startup-id "i3-msg 'workspace 1; layout splitv'"
+exec_always --no-startup-id "i3-msg "workspace 1; [title=^cava$] resize set height 90ppt"

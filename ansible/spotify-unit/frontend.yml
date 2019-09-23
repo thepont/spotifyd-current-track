@@ -12,18 +12,21 @@
       - lxterminal
       - unclutter
       - x11-xserver-utils
-  - name: Install current track global NPM
-    npm:
-        global: true
-        name: git+https://github.com/thepont/spotifyd-current-track
-# - name: Clone current track repository
-#   git:
-#     repo: https://github.com/thepont/spotifyd-current-track
-#     dest: /home/{{ admin_user }}/git/spotifyd-current-track
-# - name: install spotifyd current track deps
-#   command: npm install
-#   args:
-#     chdir: /home/{{ admin_user }}/git/spotifyd-current-track
+# - name: Install current track global NPM
+#   become: yes
+# #   become_user: root
+#   command: npm install -g git+https://github.com/thepont/spotifyd-current-track
+#   npm:
+#     global: true
+#     name: git+https://github.com/thepont/spotifyd-current-track
+- name: Clone current track repository
+  git:
+    repo: https://github.com/thepont/spotifyd-current-track
+    dest: /home/{{ admin_user }}/git/spotifyd-current-track
+- name: install spotifyd current track deps
+  command: npm install
+  args:
+    chdir: /home/{{ admin_user }}/git/spotifyd-current-track
 - name: "Startx on tty1 login"
   lineinfile:
     insertafter: "EOF"
@@ -50,9 +53,9 @@
     - copy:
         src: "../config/i3"
         dest: "/home/{{ admin_user }}/.config/i3/config"
-    - copy:
-        src: "../config/i3-saved-state.json"
-        dest: "/home/{{ admin_user }}/.config/i3/i3-saved-state.json"
+    # - copy:
+    #     src: "../config/i3-saved-state.json"
+    #     dest: "/home/{{ admin_user }}/.config/i3/i3-saved-state.json"
 - name: "Compton Setup"
   copy:
     src: "../config/compton.conf"

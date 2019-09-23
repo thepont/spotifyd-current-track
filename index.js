@@ -22,7 +22,7 @@ let boxStyle = {
       bg: "#202020",
     },
     border: {
-        type: "bg",
+        type: "line",
         ch: "▒"
         // ch: "▗"
     },
@@ -51,7 +51,7 @@ var track = blessed.box({
 });
 
 var artist = blessed.box({
-    left: '30%',
+    left: '30%-1',
     width: '30%',
     label: ' {bold}Artist{/bold} ',
     parent: top,
@@ -60,7 +60,7 @@ var artist = blessed.box({
 });
 
 var album = blessed.box({
-    left: '60%',
+    left: '60%-3',
     width: '30%',
     dockBorders: true,
     label: ' {bold}Album{/bold} ',
@@ -69,11 +69,9 @@ var album = blessed.box({
     ...boxStyle
 });
 
-
-
 var releaseDate = blessed.box({
-    left: '90%',
-    width: '10%',
+    left: '90%-4',
+    width: '13%',
     label: ' {bold}Year{/bold} ',
     parent: top,
     content: 'Year',

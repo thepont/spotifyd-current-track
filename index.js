@@ -22,11 +22,13 @@ let boxStyle = {
       bg: "#202020",
     },
     border: {
-        type: "line"
+        type: "bg",
+        ch: "▒"
+        // ch: "▗"
     },
     align: 'center',
     valign: 'center',
-    shadow: true
+    shadow: false
 }
 
 
@@ -39,38 +41,40 @@ var top = blessed.box({
     dockBorders: true,
 });
 
-var artist = blessed.box({
+var track = blessed.box({
     width: "30%",
     dockBorders: true,
-    label: '{bold}Artist{/bold}',
-    parent: top,
-    content: '{bold}Artist{/bold}',
-    ...boxStyle
-});
-
-var album = blessed.box({
-    left: '30%',
-    width: '30%',
-    dockBorders: true,
-    label: '{bold}Album{/bold}',
-    parent: top,
-    content: 'Album',
-    ...boxStyle
-});
-
-var track = blessed.box({
-    left: '60%',
-    width: '30%',
-    label: '{bold}Track{/bold}',
+    label: ' {bold}Track{/bold} ',
     parent: top,
     content: 'Track',
     ...boxStyle
 });
 
+var artist = blessed.box({
+    left: '30%',
+    width: '30%',
+    label: ' {bold}Artist{/bold} ',
+    parent: top,
+    content: 'Artist',
+    ...boxStyle
+});
+
+var album = blessed.box({
+    left: '60%',
+    width: '30%',
+    dockBorders: true,
+    label: ' {bold}Album{/bold} ',
+    parent: top,
+    content: 'Album',
+    ...boxStyle
+});
+
+
+
 var releaseDate = blessed.box({
     left: '90%',
     width: '10%',
-    label: '{bold}Year{/bold}',
+    label: ' {bold}Year{/bold} ',
     parent: top,
     content: 'Year',
     ...boxStyle

@@ -41,19 +41,14 @@
 - name: "i3 setup"
   block:
     - file: 
-        path: "/home/{{ admin_user }}/.config/lxterminal" 
+        path: "/home/{{ admin_user }}/.config/i3" 
         state: directory
     - copy:
         src: "../config/i3"
         dest: "/home/{{ admin_user }}/.config/i3/config"
-- name: "i3 setup"
-  block:
-    - file: 
-        path: "/home/{{ admin_user }}/.config/lxterminal" 
-        state: directory
     - copy:
-        src: "../config/i3"
-        dest: "/home/{{ admin_user }}/.config/i3/config"
+        src: "../config/i3-saved-state.json"
+        dest: "/home/{{ admin_user }}/.config/i3/i3-saved-state.json"
 - name: "Compton Setup"
   copy:
     src: "../config/compton.conf"

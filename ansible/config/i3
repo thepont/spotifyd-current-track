@@ -196,11 +196,12 @@ bindsym $mod+r mode "resize"
 #}
 #
 for_window [class="^.*"] border pixel 0
-exec  --no-startup-id lxterminal -e "cava"
-exec  --no-startup-id lxterminal -e "node ~/git/spotifyd-current-track/index.js"
+exec  --no-startup-id lxterminal -e "cava" -t "cava"
+exec  --no-startup-id lxterminal -e "spotifyd-current-track" -t "spotifyd-current-track"
 # Turn off power saving so the monitor doesn't always turn off
 exec_always  --no-startup-id xset s off
 exec_always  --no-startup-id xset -dpms
 # Remove mouse cursor
 exec  --no-startup-id unclutter -idle 10
 exec  --no-startup-id compton
+exec_always  --no-startup-id "i3-msg 'workspace 1; append_layout ~/.config/i3/workspace-1.json'"

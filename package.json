@@ -6,9 +6,13 @@
   "author": "Paul Esson",
   "license": "MIT",
   "private": false,
-  "bin" : { "spotifyd-current-track" : "spotifyd-current-track.sh" },
+  "bin": {
+    "spotifyd-current-track": "spotifyd-current-track.sh"
+  },
   "dependencies": {
     "journalctl": "^1.0.0",
+    "moment": "^2.24.0",
+    "neo-blessed": "^0.2.0",
     "rxjs": "^6.5.3",
     "spotify-web-api-node": "^4.0.0"
   }

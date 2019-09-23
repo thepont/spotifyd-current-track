@@ -1,12 +1,81 @@
-
-// #!/usr/bin/env node
-
+const blessed = require('neo-blessed');
 const { spawn } = require('child_process'); 
 const {Subject, timer} = require('rxjs');
-const {map, filter, flatMap, debounceTime, tap, share, skipUntil, first} = require('rxjs/operators');
+const {map, filter, flatMap, debounceTime, share, skipUntil, first} = require('rxjs/operators');
 const Journalctl = require('journalctl');
 const SpotifyWebApi = require('spotify-web-api-node');
+const moment = require('moment');
 const RENEW_TOKEN_MS = 3000000;
+//Loading track "Jigsaw Falling Into Place" with Spotify URI "spotify:track:15ea10YpJIl3mJq75yzqsD"
+
+var screen = blessed.screen({
+    smartCSR: true,
+    dockBorders: true,
+    title: "spotifyd-current-track",
+});
+
+
+let boxStyle = {
+    tags: true,
+    style: {
+      fg: 'white',
+      bg: "#202020",
+    },
+    border: {
+        type: "line"
+    },
+    align: 'center',
+    valign: 'center',
+    shadow: true
+}
+
+
+var top = blessed.box({
+    top: 'left',
+    width: '100%',
+    height: '100%',
+    parent: screen,
+    tags: true,
+    dockBorders: true,
+});
+
+var artist = blessed.box({
+    width: "30%",
+    dockBorders: true,
+    label: '{bold}Artist{/bold}',
+    parent: top,
+    content: '{bold}Artist{/bold}',
+    ...boxStyle
+});
+
+var album = blessed.box({
+    left: '30%',
+    width: '30%',
+    dockBorders: true,
+    label: '{bold}Album{/bold}',
+    parent: top,
+    content: 'Album',
+    ...boxStyle
+});
+
+var track = blessed.box({
+    left: '60%',
+    width: '30%',
+    label: '{bold}Track{/bold}',
+    parent: top,
+    content: 'Track',
+    ...boxStyle
+});
+
+var releaseDate = blessed.box({
+    left: '90%',
+    width: '10%',
+    label: '{bold}Year{/bold}',
+    parent: top,
+    content: 'Year',
+    ...boxStyle
+});
+
 
 const journalctl = new Journalctl({
     identifier: "Spotifyd"
@@ -28,6 +97,7 @@ let auth = timer(0, RENEW_TOKEN_MS).pipe(
 );
 
 auth.subscribe((cred) => {
+    screen.render();
     spotifyApi.setAccessToken(cred.body['access_token'])
 });
 
@@ -48,14 +118,16 @@ let albumsArt = tracks.pipe(
     filter(ii => ii.length > 0),
     map(ii => ii[0].url)
 ).subscribe(
-    ii => spawn('feh', ['--bg-center', ii])
+    ii => { 
+        spawn('feh', ['--bg-center', ii])
+    }
 )
 
-tracks.subscribe(ii => {
-    console.log(tracklog(ii));
+tracks.subscribe(currentTrack => {
+    let songDuration = moment.duration(currentTrack.duration_ms);
+    artist.setContent(currentTrack.artists.reduce((rr, jj, ix) => `${rr}${ix ? ',' : ''}${jj.name}`, ""))
+    album.setContent(currentTrack.album.name)
+    track.setContent(currentTrack.name);
+    releaseDate.setContent(moment(currentTrack.album.release_date).format('YYYY'));
+    screen.render();
 });
-
-
-
-// feh --bg-scale /path/to/image
-// or feh --bg-center /path/to/image

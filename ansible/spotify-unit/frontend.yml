@@ -12,6 +12,8 @@
       - lxterminal
       - unclutter
       - x11-xserver-utils
+      - xterm
+
 # - name: Install current track global NPM
 #   become: yes
 # #   become_user: root
@@ -21,6 +23,7 @@
 #     name: git+https://github.com/thepont/spotifyd-current-track
 - name: Clone current track repository
   git:
+    force: yes
     repo: https://github.com/thepont/spotifyd-current-track
     dest: /home/{{ admin_user }}/git/spotifyd-current-track
 - name: install spotifyd current track deps
@@ -37,14 +40,11 @@
   copy:
     content: "exec /usr/bin/i3"
     dest: "/home/{{ admin_user }}/.xinitrc"
-- name: "lxterminal setup"
-  block:
-    - file: 
-        path: "/home/{{ admin_user }}/.config/lxterminal" 
-        state: directory
-    - copy:
-        src: "../config/lxterminal.conf"
-        dest: "/home/{{ admin_user }}/.config/lxterminal/lxterminal.conf"
+- name: "copy ui script"
+  copy:
+    mode: "u+rwx"
+    src: "./scripts/run-ui.sh"
+    dest: "/home/{{ admin_user }}/run-ui.sh"
 - name: "i3 setup"
   block:
     - file: 
@@ -63,12 +63,14 @@
 - name: "Export spotify client id"
   lineinfile:
     insertafter: "EOF"
+    create: "yes"
     state: "present"
-    path: "/home/{{ admin_user }}/.bashrc"
-    line: "export SPOTIFY_CLIENT_ID={{spotify_client_id}}"
+    path: "/home/{{ admin_user }}/git/spotifyd-current-track/.env"
+    line: "SPOTIFY_CLIENT_ID={{spotify_client_id}}"
 - name: "Export spotify client secret"
   lineinfile:
+    create: "yes"
     insertafter: "EOF"
     state: "present"
-    path: "/home/{{ admin_user }}/.bashrc"
-    line: "export SPOTIFY_CLIENT_SECRET={{spotify_client_secret}}"
+    path: "/home/{{ admin_user }}/git/spotifyd-current-track/.env"
+    line: "SPOTIFY_CLIENT_SECRET={{spotify_client_secret}}"

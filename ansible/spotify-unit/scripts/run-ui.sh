@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 pidof spotifyd >/dev/null && echo "Service is running" || spotifyd
 xterm -e "cava" &
-xterm -e "cd ~/git/spotifyd-current-track/ && ./spotifyd-current-track.sh" &
+xterm -fa 'Monospace' -fs 10 -e "cd ~/git/spotifyd-current-track/ && ./spotifyd-current-track.sh" &
 # Turn off power saving so the monitor doesn't always turn off
 xset s off &
 xset -dpms &
@@ -13,4 +13,4 @@ compton &
 sleep 10
 # Setup our layout.
 i3-msg 'workspace 1; layout splitv'
-i3-msg "workspace 1; [title=^cava$] resize set height 90ppt"
+i3-msg "workspace 1; [title=^cava$] resize set height 87ppt"

@@ -18,8 +18,8 @@ var screen = blessed.screen({
 let boxStyle = {
     tags: true,
     style: {
-      fg: 'white',
-      bg: "#202020",
+      fg: 'black',
+      bg: "white",
     },
     border: {
         type: "line",

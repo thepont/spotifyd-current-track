@@ -42,7 +42,7 @@ var top = blessed.box({
 });
 
 var track = blessed.box({
-    left: '5%'
+    left: '6%',
     width: "30%",
     dockBorders: true,
     label: ' {bold}Track{/bold} ',
@@ -52,7 +52,7 @@ var track = blessed.box({
 });
 
 var artist = blessed.box({
-    left: '35%-1',
+    left: '36%-1',
     width: '30%',
     label: ' {bold}Artist{/bold} ',
     parent: top,
@@ -61,7 +61,7 @@ var artist = blessed.box({
 });
 
 var album = blessed.box({
-    left: '65%-3',
+    left: '66%-3',
     width: '30%',
     dockBorders: true,
     label: ' {bold}Album{/bold} ',

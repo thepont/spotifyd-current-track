@@ -1,3 +1,4 @@
+require('dotenv').config();
 const blessed = require('neo-blessed');
 const { spawn } = require('child_process'); 
 const {Subject, timer} = require('rxjs');

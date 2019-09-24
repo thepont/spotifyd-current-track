@@ -69,14 +69,14 @@ var album = blessed.box({
     ...boxStyle
 });
 
-var releaseDate = blessed.box({
-    left: '90%-4',
-    width: '13%',
-    label: ' {bold}Year{/bold} ',
-    parent: top,
-    content: 'Year',
-    ...boxStyle
-});
+// var releaseDate = blessed.box({
+//     left: '90%-4',
+//     width: '13%',
+//     label: ' {bold}Year{/bold} ',
+//     parent: top,
+//     content: 'Year',
+//     ...boxStyle
+// });
 
 
 const journalctl = new Journalctl({
@@ -130,6 +130,6 @@ tracks.subscribe(currentTrack => {
     artist.setContent(currentTrack.artists.reduce((rr, jj, ix) => `${rr}${ix ? ',' : ''}${jj.name}`, ""))
     album.setContent(currentTrack.album.name)
     track.setContent(currentTrack.name);
-    releaseDate.setContent(moment(currentTrack.album.release_date).format('YYYY'));
+    // releaseDate.setContent(moment(currentTrack.album.release_date).format('YYYY'));
     screen.render();
 });
